@@ -3,6 +3,7 @@ import sqlite3
 import pandas as pd
 import json
 import os
+import pycountry
 from datetime import datetime
 
 st.set_page_config(
@@ -23,12 +24,7 @@ AI_MODELS = [
     "Qwen"
 ]
 
-COUNTRIES = [
-    "United States", "United Kingdom", "Canada", "Australia", "Germany",
-    "France", "Japan", "China", "India", "Brazil", "Russia", "Italy",
-    "Spain", "South Korea", "Mexico", "Indonesia", "Netherlands", "Turkey",
-    "Saudi Arabia", "United Arab Emirates", "Iran", "Other"
-]
+COUNTRIES = sorted([country.name for country in pycountry.countries])
 
 AGE_GROUPS = [
     "Under 18",
@@ -184,25 +180,32 @@ def import_database_json(json_str):
     conn.commit()
     conn.close()
 
-if os.path.exists("profile.jpg"):
-    st.image("profile.jpg", use_container_width=True)
-
-st.title("Global Behavioral & AI Survey Platform")
-st.markdown("""
-Welcome to the interactive demographic and AI analysis ecosystem. 
-Participate in novel scenario-based decisions, explore granular population breakdowns, 
-and compare human instinct with artificial intelligence responses.
-""")
-
 st.sidebar.title("Navigation & Account")
-menu_options = ["Auth (Login / Register)", "Polls Ecosystem"]
+menu_options = ["Home", "Auth (Login / Register)", "Polls Ecosystem"]
 
 if st.session_state["logged_in"] and st.session_state["username"] == "amir":
     menu_options.extend(["Poll Control Panel", "Database Backup Panel"])
 
 choice = st.sidebar.radio("Select Menu", menu_options)
 
-if choice == "Auth (Login / Register)":
+if choice == "Home":
+    if os.path.exists("profile.jpg"):
+        st.image("profile.jpg", use_container_width=True)
+
+    st.markdown("""
+Welcome to the Votism platform! Here, we will regularly host engaging polls centered on "gray-area" ethical issues. By creating a profile and providing a few basic details, you can participate in these polls and view the results in real time. You can also explore detailed breakdowns based on various categories, as well as insights from different Ai models.
+
+Be sure to subscribe our YouTube channel.
+
+Let’s get to know the world better.
+""")
+    
+    st.markdown(
+        '<p><a href="https://www.youtube.com/@amirrn5823" target="_blank"><button style="background-color: #FF0000; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;">Subscribe to YouTube Channel</button></a></p>',
+        unsafe_allow_html=True
+    )
+
+elif choice == "Auth (Login / Register)":
     st.header("Authentication & Profile Setup")
     
     if st.session_state["logged_in"]:
